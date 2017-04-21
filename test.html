@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+ <html lang="en">
+ 
+ <head>
+     <meta charset="utf-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1">
+     <meta name="description" content="">
+     <meta name="author" content="">
+ 
+     <title>Test</title>
+
+
+     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+     
+     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.core.min.js"></script>
+     <script type="text/javascript" src="flask_shelve.js"></script>
+
+     <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/annodoc-main.css') }}"/> -->
+     <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/style-vis.css') }}"/> -->
+
+ </head>
+ 
+ <body>
+   <div class="container">
+     <div class="flask_shelve" fstype="multichoice" fschoices="Correct|Incorrect" fscol="test4" fsid="b1">Yo some text</div>
+     <div class="flask_shelve" fstype="multichoice" fschoices="Correct|Incorrect" fscol="test4" fsid="b2">And some other text</div>
+   </div>
+
+   <script type="text/javascript">
+     $(".flask_shelve").each(flask_shelve)
+   </script>
+   
+<!-- <\!-- annotation visualization stuff -\->  -->
+<!-- <script type="text/javascript"> -->
+<!--     var root = "{{url_for('static' , filename='')}}"; -->
+<!--     head.js( -->
+<!--         // External libraries -->
+<!--         root + 'js/jquery.min.js', -->
+<!--         root + 'js/jquery.svg.min.js', -->
+<!--         root + 'js/jquery.svgdom.min.js', -->
+<!--         root + 'js/jquery-ui.min.js', -->
+<!--         root + 'js/waypoints.min.js', -->
+<!--         // brat helper modules -->
+<!--         root + 'js/brat/configuration.js', -->
+<!--         root + 'js/brat/util.js', -->
+<!--         root + 'js/brat/annotation_log.js', -->
+<!--         root + 'js/webfont.js', -->
+<!--         // brat main modules -->
+<!--         root + 'js/brat/dispatcher.js', -->
+<!--         root + 'js/brat/url_monitor.js', -->
+<!--         root + 'js/brat/visualizer.js', -->
+<!--         // external parsing libraries -->
+<!--         root + 'js/conllu.js/conllu.js', -->
+<!--         // annotation documentation support -->
+<!--         root + 'js/local/annodoc.js', -->
+<!--         // project-specific collection data -->
+<!--         root + 'js/local/collections.js', -->
+<!--         // project-specific configuration -->
+<!--         root + 'js/local/config.js' -->
+<!--     ); -->
+
+<!--     var webFontURLs = [ -->
+<!--         root + 'fonts/PT_Sans-Caption-Web-Regular.ttf', -->
+<!--         root + 'fonts/Liberation_Sans-Regular.ttf' -->
+<!--     ]; -->
+
+<!--     head.ready(function() { -->
+<!--         // mark current collection (filled in by Jekyll) -->
+<!--         Collections.listing['_current'] = ';' -->
+
+<!-- 	// performs all embedding and support functions -->
+<!--     console.log("Activating Annodoc"); -->
+<!--     Annodoc.activate(Config.bratCollData, Collections.listing); -->
+<!--     console.log("Done activating Annodoc"); -->
+<!--     }); -->
+<!-- </script> -->
+<!-- <\!-- end annotation visualization stuff -\-> -->
+ </body>
+ </html>
