@@ -78,7 +78,12 @@ def list_collections():
         db,lockfile=lock_and_open_collection(collection)
         value[collection]=dict(db)
         close_and_unlock_collection(db,lockfile)
-    return flask.Response(json.dumps(value),content_type="application/json")
+        resp=flask.Response(json.dumps(value),content_type="application/json")
+        resp.headers["Access-Control-Allow-Origin"]="*"
+        return resp
+    resp=flask.Response(json.dumps(value),content_type="application/json")
+    resp.headers["Access-Control-Allow-Origin"]="*"
+    return resp
    
 if __name__ == u'__main__':
     app.run(debug=False)

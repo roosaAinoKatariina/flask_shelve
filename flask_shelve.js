@@ -4,7 +4,7 @@ function flask_shelve(idx,element) {
 	var collection=$(element).attr("fscol");
 	var fsid=$(element).attr("fsid");
 	var choices=$(element).attr("fschoices").split("|");
-	var choicebox=jQuery("<div/>", {"id":collection+"_"+fsid});
+	var choicebox=jQuery("<div/>", {"id":collection+"_"+fsid,"fscol":collection,"class":"fsgroup"});
 	for (choice of choices) {
 	    var newlabel=jQuery("<label/>", {"for": collection+"_"+fsid});
 	    newlabel.text(choice);
@@ -19,7 +19,21 @@ function flask_shelve(idx,element) {
     }    
 }    
 
-function initialize_value(element) {
+function initialize_values(collection) {
+    var request_url="http://127.0.0.1:5000/list/"+collection;
+    $.ajax({url: request_url, type: 'GET', dataType: 'json',
+	    beforeSend: function() {$(".fsgroup").css("border","1px solid orange");},
+	    success: function(data,status,request) {
+		$("input[fscol='"+collection+"']").each(function(id, elem) {
+		    console.log(data[$(elem).attr("fsid")].$(elem).attr("fschoice"));
+		    $(elem).checked = (data[$(elem).attr("fsid")]==$(elem).attr("fschoice"));
+							})
+							    //})
+	    }, //success
+//	    fail: function(error) {console.log("FAIL",collection,id);$("#"+collection+"_"+id).css("border","1px solid red");},
+	    error: function(request,status,error) {console.log("FAIL",collection);$("#"+collection+"_"+id).css("border","1px solid red");},
+	    timeout:3000});
+    
 }
 
 function register_value(element) {
