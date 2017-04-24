@@ -4,8 +4,15 @@ import json
 import flask
 import glob
 import os
+import traceback
 
 app = flask.Flask(__name__)
+
+def access_allowed(func):
+    def wrapped_function(*args, **kwargs):
+        resp=flask.make_response(func(*args,**kwargs))
+        resp.headers['Access-Control-Allow-Origin']='*'
+    return wrapped_function
 
 def lock_and_open_collection(collection):
     for d in ("locks","shelves"):
@@ -29,11 +36,15 @@ def get_key(collection,key):
         db,lockfile=lock_and_open_collection(collection)
         value=db.get(key,flask.request.args.get("default",None))
         close_and_unlock_collection(db,lockfile)
-        return flask.Response(json.dumps(value),content_type="application/json")
+        db=None
+        resp=flask.Response(json.dumps(value),content_type="application/json")
+        resp.headers["Access-Control-Allow-Origin"]="*"
+        return resp
     except:
         return flask.abort(400)
     finally:
-        close_and_unlock_collection(db,lockfile)
+        if db is not None:
+            close_and_unlock_collection(db,lockfile)
 
 @app.route('/set/<collection>/<key>', methods=['GET'])
 def set_key(collection,key):
@@ -46,7 +57,9 @@ def set_key(collection,key):
         db,lockfile=lock_and_open_collection(collection)
         db[key]=value
         close_and_unlock_collection(db,lockfile)
-        return flask.Response(valuejs,content_type="application/json")
+        resp=flask.Response(valuejs,content_type="application/json")
+        resp.headers["Access-Control-Allow-Origin"]="*"
+        return resp
     else:
         return flask.abort(400,"no value given")
 
