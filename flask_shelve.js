@@ -20,18 +20,21 @@ function flask_shelve(idx,element) {
 }    
 
 function initialize_values(collection) {
-    var request_url="http://127.0.0.1:5000/list/"+collection;
+    var request_url=APP_ROOT+"/list/"+collection;
     $.ajax({url: request_url, type: 'GET', dataType: 'json',
-	    beforeSend: function() {$(".fsgroup").css("border","1px solid orange");},
+	    beforeSend: function() {$(".fsgroup").css("border","2px solid orange");},
 	    success: function(data,status,request) {
 		$("input[fscol='"+collection+"']").each(function(id, elem) {
-		    console.log(data[$(elem).attr("fsid")].$(elem).attr("fschoice"));
-		    $(elem).checked = (data[$(elem).attr("fsid")]==$(elem).attr("fschoice"));
+		    var checked = (data[$(elem).attr("fsid")]==$(elem).attr("fschoice"));
+		    $(elem).prop("checked",checked);
+		    if (checked) {
+			var collection_id=collection+"_"+$(elem).attr("fsid")
+			$(".fsgroup[id="+collection_id+"]").css("border","2px solid green");
+		    }
 							})
-							    //})
 	    }, //success
-//	    fail: function(error) {console.log("FAIL",collection,id);$("#"+collection+"_"+id).css("border","1px solid red");},
-	    error: function(request,status,error) {console.log("FAIL",collection);$("#"+collection+"_"+id).css("border","1px solid red");},
+//	    fail: function(error) {console.log("FAIL",collection,id);$("#"+collection+"_"+id).css("border","2px solid red");},
+	    error: function(request,status,error) {console.log("FAIL",collection);$("#"+collection+"_"+id).css("border","2px solid red");},
 	    timeout:3000});
     
 }
@@ -41,12 +44,12 @@ function register_value(element) {
     var collection=element.attr("fscol");
     var id=element.attr("fsid");
     var new_val=element.attr("fschoice");
-    var request_url="http://127.0.0.1:5000/set/"+collection+"/"+id;
+    var request_url=APP_ROOT+"/set/"+collection+"/"+id;
     $.ajax({url: request_url, data:{"value":JSON.stringify(new_val)}, type: 'GET', dataType: 'json',
-	    beforeSend: function() {$("#"+collection+"_"+id).css("border","1px solid orange");},
-	    success: function(error) {console.log("OK",collection,id);$("#"+collection+"_"+id).css("border","1px solid green");},
-	    fail: function(error) {console.log("FAIL",collection,id);$("#"+collection+"_"+id).css("border","1px solid red");},
-	    error: function(request,status,error) {console.log("FAIL",collection,id,error);$("#"+collection+"_"+id).css("border","1px solid red");},
+	    beforeSend: function() {$("#"+collection+"_"+id).css("border","2px solid orange");},
+	    success: function(error) {$("#"+collection+"_"+id).css("border","2px solid green");},
+	    fail: function(error) {$("#"+collection+"_"+id).css("border","2px solid red");},
+	    error: function(request,status,error) {console.log("FAIL",collection,id,error);$("#"+collection+"_"+id).css("border","2px solid red");},
 	    timeout:3000});
 }
 

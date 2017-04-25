@@ -68,7 +68,9 @@ def list_collection(collection):
     db,lockfile=lock_and_open_collection(collection)
     value=json.dumps(dict(db))
     close_and_unlock_collection(db,lockfile)
-    return flask.Response(value,content_type="application/json")
+    resp=flask.Response(value,content_type="application/json")
+    resp.headers["Access-Control-Allow-Origin"]="*"
+    return resp
 
 @app.route('/listall', methods=['GET'])
 def list_collections():
