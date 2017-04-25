@@ -6,14 +6,16 @@ function flask_shelve(idx,element) {
 	var choices=$(element).attr("fschoices").split("|");
 	var choicebox=jQuery("<div/>", {"id":collection+"_"+fsid,"fscol":collection,"class":"fsgroup"});
 	for (choice of choices) {
-	    var newlabel=jQuery("<label/>", {"for": collection+"_"+fsid});
+	    var newlabel=jQuery("<label/>", {"for": collection+"_"+fsid, style: "padding-right:20px"});
 	    newlabel.text(choice);
-	    newlabel.appendTo(choicebox);
+	    
 	    var newbutton=jQuery('<input/>', {type: "radio", fsid: fsid, fscol: collection, name: collection+"_"+fsid,"fschoice": choice});
 	    newbutton.on('change', function() {
 		register_value($(this));
 	    });
+
 	    newbutton.appendTo(choicebox);
+	    newlabel.appendTo(choicebox);
 	}
 	choicebox.appendTo($(element));
     }    
