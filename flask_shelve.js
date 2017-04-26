@@ -9,7 +9,7 @@ function flask_shelve(idx,element) {
 	    var newlabel=jQuery("<label/>", {"for": collection+"_"+fsid, style: "padding-right:20px"});
 	    newlabel.text(choice);
 	    
-	    var newbutton=jQuery('<input/>', {type: "radio", fsid: fsid, fscol: collection, name: collection+"_"+fsid,"fschoice": choice});
+	    var newbutton=jQuery('<input/>', {type: "radio", fsid: fsid, fscol: collection, name: collection+"_"+fsid,"fschoice": choice, "fsmeta":$(element).attr("fsmeta")});
 	    newbutton.on('change', function() {
 		register_value($(this));
 	    });
@@ -27,7 +27,7 @@ function initialize_values(collection) {
 	    beforeSend: function() {$(".fsgroup").css("border","2px solid orange");},
 	    success: function(data,status,request) {
 		$("input[fscol='"+collection+"']").each(function(id, elem) {
-		    var checked = (data[$(elem).attr("fsid")]==$(elem).attr("fschoice"));
+		    var checked = (data[$(elem).attr("fsid")]["annotation"]==$(elem).attr("fschoice"));
 		    $(elem).prop("checked",checked);
 		    if (checked) {
 			var collection_id=collection+"_"+$(elem).attr("fsid")
@@ -47,7 +47,7 @@ function register_value(element) {
     var id=element.attr("fsid");
     var new_val=element.attr("fschoice");
     var request_url=APP_ROOT+"/set/"+collection+"/"+id;
-    $.ajax({url: request_url, data:{"value":JSON.stringify(new_val)}, type: 'GET', dataType: 'json',
+    $.ajax({url: request_url, data:{"value":JSON.stringify({"annotation":new_val, "meta":element.attr("fsmeta")})}, type: 'GET', dataType: 'json',
 	    beforeSend: function() {$("#"+collection+"_"+id).css("border","2px solid orange");},
 	    success: function(error) {$("#"+collection+"_"+id).css("border","2px solid green");},
 	    fail: function(error) {$("#"+collection+"_"+id).css("border","2px solid red");},
