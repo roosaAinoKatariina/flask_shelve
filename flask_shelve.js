@@ -23,6 +23,7 @@ function flask_shelve(idx,element) {
 
 function initialize_values(collection) {
     var request_url=APP_ROOT+"/list/"+collection;
+    //$.ajax({url: request_url, type: 'GET', dataType: 'json',
     $.ajax({url: request_url, type: 'GET', dataType: 'json',
 	    beforeSend: function() {$(".fsgroup").css("border","2px solid orange");},
 	    success: function(data,status,request) {
@@ -46,8 +47,10 @@ function register_value(element) {
     var collection=element.attr("fscol");
     var id=element.attr("fsid");
     var new_val=element.attr("fschoice");
-    var request_url=APP_ROOT+"/set/"+collection+"/"+id;
-    $.ajax({url: request_url, data:{"value":JSON.stringify({"annotation":new_val, "meta":element.attr("fsmeta")})}, type: 'GET', dataType: 'json',
+	//var request_url=APP_ROOT+"/set/"+collection+"/"+id;
+	console.log('Check this out:');
+	var request_url=APP_ROOT+"/list/"+collection;
+    $.ajax({url: request_url, data:{"value":JSON.stringify({"annotation":new_val, "meta":element.attr("fsmeta")})}, type: 'POST', dataType: 'json',
 	    beforeSend: function() {$("#"+collection+"_"+id).css("border","2px solid orange");},
 	    success: function(error) {$("#"+collection+"_"+id).css("border","2px solid green");},
 	    fail: function(error) {$("#"+collection+"_"+id).css("border","2px solid red");},

@@ -5,6 +5,8 @@ import flask
 import glob
 import os
 import traceback
+from flask import Flask, abort, request
+import urllib.parse
 
 app = flask.Flask(__name__)
 
@@ -22,7 +24,7 @@ def lock_and_open_collection(collection):
             pass
     lockfile=open("locks/{}.lock".format(collection),"w")
     fcntl.lockf(lockfile,fcntl.LOCK_EX) #Acquire lock
-    db=shelve.open("shelves/{}".format(collection))
+    db=shelve.open("shelves/{}".format(collection), writeback=True)
     return db,lockfile
 
 def close_and_unlock_collection(db,lockfile):
@@ -30,6 +32,7 @@ def close_and_unlock_collection(db,lockfile):
     fcntl.lockf(lockfile,fcntl.LOCK_UN) #Release lock
     lockfile.close()
 
+#@app.route('/get/<collection>/<key>', methods=['GET', 'POST'])
 @app.route('/get/<collection>/<key>', methods=['GET'])
 def get_key(collection,key):
     try:
@@ -46,24 +49,31 @@ def get_key(collection,key):
         if db is not None:
             close_and_unlock_collection(db,lockfile)
 
-@app.route('/set/<collection>/<key>', methods=['GET'])
-def set_key(collection,key):
-    if flask.request.args.get("value",None) is not None:
-        valuejs=flask.request.args.get("value")
-        try:
-            value=json.loads(valuejs)
-        except:
-            return flask.abort(400,"could not decode value json")
-        db,lockfile=lock_and_open_collection(collection)
-        db[key]=value
-        close_and_unlock_collection(db,lockfile)
-        resp=flask.Response(valuejs,content_type="application/json")
-        resp.headers["Access-Control-Allow-Origin"]="*"
-        return resp
-    else:
-        return flask.abort(400,"no value given")
 
-@app.route('/list/<collection>', methods=['GET'])
+@app.route('/set/<collection>/<key>/<textid>', methods=['POST'])
+def set_key(collection,key,textid):
+
+    if not request.json:
+        abort(400)
+    valuejs = request.json["value"]
+    valuejs = urllib.parse.unquote(valuejs)
+    valuepy = json.loads(valuejs)
+
+    #open the dictionary
+    db,lockfile=lock_and_open_collection(collection)
+    if key not in db:
+        print('No key yet')
+        db[key] = {}
+    db[key][textid] = valuepy
+    close_and_unlock_collection(db,lockfile)
+    resp=flask.Response(valuejs,content_type="application/json")
+    resp.headers["Access-Control-Allow-Origin"]="*"
+    return resp
+
+
+
+@app.route('/list/<collection>', methods=['GET', 'POST'])
+#@app.route('./local-new-code', methods=['GET', 'POST'])
 def list_collection(collection):
     db,lockfile=lock_and_open_collection(collection)
     value=json.dumps(dict(db))
@@ -72,7 +82,7 @@ def list_collection(collection):
     resp.headers["Access-Control-Allow-Origin"]="*"
     return resp
 
-@app.route('/listall', methods=['GET'])
+@app.route('/listall', methods=['GET', 'POST'])
 def list_collections():
     collections=set(os.path.splitext(os.path.basename(f))[0] for f in  glob.glob("shelves/*"))
     value={}
